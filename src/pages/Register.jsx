@@ -1,11 +1,25 @@
 import React from "react";
 import "../style/Register.css";
-import { Form } from "antd";
-import { Link } from "react-router-dom";
+import { Form, message } from "antd";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Register() {
-  const onFinishHandler = (values) => {
-    console.log("Received values of form:", values);
+  const navigate = useNavigate();
+
+  const onFinishHandler = async (values) => {
+    try {
+      const response = await axios.post("/user/register", values);
+      if (response.data.success) {
+        message.success("User registered successfully");
+        navigate("/login");
+      } else {
+        message.error(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      message.error("Something Went Wrong");
+    }
   };
 
   return (
